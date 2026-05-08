@@ -5,7 +5,7 @@ from datetime import datetime
 # CONFIG
 # =========================
 st.set_page_config(
-    page_title="Es Kelapa Lanjai",
+    page_title="Kasir Es Kelapa",
     layout="wide"
 )
 
@@ -17,21 +17,25 @@ menu = [
         "id": 1,
         "nama": "Es Kelapa + Gula",
         "harga": 4000,
+        "gambar": "https://i.postimg.cc/0Q0n0G7M/es-kelapa-gula.jpg",
     },
     {
         "id": 2,
         "nama": "Es Kelapa + Gula + Susu",
         "harga": 5000,
+        "gambar": "https://i.postimg.cc/vmL1YBfN/es-kelapa-susu.jpg",
     },
     {
         "id": 3,
         "nama": "Kelapa Murni",
         "harga": 10000,
+        "gambar": "https://i.postimg.cc/Z5W6tR6B/kelapa-murni.jpg",
     },
     {
         "id": 4,
         "nama": "Air Kelapa",
         "harga": 5000,
+        "gambar": "https://i.postimg.cc/4dM3tM0r/air-kelapa.jpg",
     },
 ]
 
