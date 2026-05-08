@@ -1,7 +1,13 @@
 import streamlit as st
 from datetime import datetime
 
-st.set_page_config(page_title="Kasir UMKM", layout="wide")
+# =========================
+# CONFIG
+# =========================
+st.set_page_config(
+    page_title="Kasir UMKM",
+    layout="wide"
+)
 
 # =========================
 # DATA MENU
@@ -11,30 +17,30 @@ menu = [
         "id": 1,
         "nama": "Es Kelapa + Gula",
         "harga": 4000,
-        "gambar": "assets/kelapa1.jpg",
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 2,
         "nama": "Es Kelapa + Gula + Susu",
         "harga": 5000,
-        "gambar": "assets/kelapa2.jpg",
+        "gambar": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 3,
         "nama": "Kelapa Murni",
         "harga": 10000,
-        "gambar": "assets/kelapa3.jpg",
+        "gambar": "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 4,
         "nama": "Air Kelapa",
         "harga": 5000,
-        "gambar": "assets/kelapa4.jpg",
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=1200&auto=format&fit=crop",
     },
 ]
 
 # =========================
-# SESSION STATE
+# SESSION
 # =========================
 if "keranjang" not in st.session_state:
     st.session_state.keranjang = []
@@ -42,14 +48,23 @@ if "keranjang" not in st.session_state:
 if "riwayat_transaksi" not in st.session_state:
     st.session_state.riwayat_transaksi = []
 
+if "struk" not in st.session_state:
+    st.session_state.struk = ""
+
 # =========================
 # STYLE
 # =========================
 st.markdown(
     """
     <style>
+
     .main {
-        background: linear-gradient(to bottom right, #ffe4e6, #fef9c3, #fed7aa);
+        background: linear-gradient(
+            to bottom right,
+            #ffe4e6,
+            #fef9c3,
+            #fed7aa
+        );
     }
 
     h1, h2, h3 {
@@ -61,12 +76,25 @@ st.markdown(
         color: white;
         border-radius: 10px;
         border: none;
+        padding: 10px;
+        font-weight: bold;
     }
 
     .stButton button:hover {
         background-color: #ea580c;
         color: white;
     }
+
+    .struk {
+        background-color: white;
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px dashed #999;
+        color: black;
+        font-family: monospace;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -77,7 +105,9 @@ st.markdown(
 # =========================
 st.title("🥥 Aplikasi Kasir Es Kelapa")
 
-menu_tab, keuangan_tab = st.tabs(["Kasir", "Keuangan"])
+menu_tab, keuangan_tab = st.tabs(
+    ["Kasir", "Keuangan"]
+)
 
 # =========================
 # TAB KASIR
@@ -91,7 +121,7 @@ with menu_tab:
     # =====================
     with col1:
 
-        st.subheader("Menu")
+        st.subheader("Menu Minuman")
 
         for item in menu:
 
@@ -103,7 +133,7 @@ with menu_tab:
                 )
 
                 st.write(f"### {item['nama']}")
-                st.write(f"Rp {item['harga']:,}")
+                st.write(f"Harga : Rp {item['harga']:,}")
 
                 qty = st.number_input(
                     f"Qty {item['nama']}",
@@ -121,19 +151,26 @@ with menu_tab:
 
                     for keranjang_item in st.session_state.keranjang:
 
-                        if keranjang_item["nama"] == item["nama"]:
+                        if (
+                            keranjang_item["nama"]
+                            == item["nama"]
+                        ):
+
                             keranjang_item["qty"] += qty
                             found = True
                             break
 
                     if not found:
+
                         st.session_state.keranjang.append({
                             "nama": item["nama"],
                             "harga": item["harga"],
                             "qty": qty,
                         })
 
-                    st.success(f"{item['nama']} ditambahkan")
+                    st.success(
+                        f"{item['nama']} ditambahkan"
+                    )
 
     # =====================
     # KERANJANG
@@ -145,22 +182,40 @@ with menu_tab:
         total = 0
 
         if len(st.session_state.keranjang) == 0:
+
             st.info("Belum ada pesanan")
 
-        for item in st.session_state.keranjang:
+        else:
 
-            subtotal = item["harga"] * item["qty"]
-            total += subtotal
+            for item in st.session_state.keranjang:
 
-            st.write(f"{item['nama']} x {item['qty']}")
-            st.write(f"Rp {subtotal:,}")
-            st.divider()
+                subtotal = (
+                    item["harga"]
+                    * item["qty"]
+                )
 
-        st.write(f"## Total: Rp {total:,}")
+                total += subtotal
+
+                st.write(
+                    f"{item['nama']} x {item['qty']}"
+                )
+
+                st.write(
+                    f"Rp {subtotal:,}"
+                )
+
+                st.divider()
+
+        st.write(f"## Total : Rp {total:,}")
 
         metode = st.selectbox(
             "Metode Pembayaran",
-            ["Cash", "QRIS", "Transfer Bank", "E-Wallet"]
+            [
+                "Cash",
+                "QRIS",
+                "Transfer Bank",
+                "E-Wallet"
+            ]
         )
 
         uang = st.number_input(
@@ -173,18 +228,27 @@ with menu_tab:
         if uang > 0:
 
             if uang >= total:
-                st.success(f"Kembalian: Rp {kembalian:,}")
+
+                st.success(
+                    f"Kembalian : Rp {kembalian:,}"
+                )
+
             else:
-                st.error("Uang pelanggan kurang")
+
+                st.error(
+                    "Uang pelanggan kurang"
+                )
 
         col_hapus, col_cetak = st.columns(2)
 
         # =====================
-        # KOSONGKAN
+        # HAPUS KERANJANG
         # =====================
         with col_hapus:
 
-            if st.button("Kosongkan Keranjang"):
+            if st.button(
+                "Kosongkan Keranjang"
+            ):
 
                 st.session_state.keranjang = []
                 st.rerun()
@@ -198,115 +262,95 @@ with menu_tab:
 
                 if total == 0:
 
-                    st.warning("Keranjang masih kosong")
+                    st.warning(
+                        "Keranjang masih kosong"
+                    )
 
                 elif uang < total:
 
-                    st.error("Pembayaran belum cukup")
+                    st.error(
+                        "Pembayaran belum cukup"
+                    )
 
                 else:
 
-                    # SIMPAN TRANSAKSI
+                    total_item = sum(
+                        item["qty"]
+                        for item
+                        in st.session_state.keranjang
+                    )
+
                     transaksi = {
                         "tanggal": datetime.now().strftime(
                             "%Y-%m-%d %H:%M:%S"
                         ),
                         "total": total,
                         "metode": metode,
-                        "jumlah_item": len(
-                            st.session_state.keranjang
-                        ),
+                        "jumlah_item": total_item,
                     }
 
                     st.session_state.riwayat_transaksi.append(
                         transaksi
                     )
 
-                    st.balloons()
+                    # =================
+                    # STRUK
+                    # =================
+                    struk = f"""
+TOKO ES KELAPA
+========================
 
-                    st.success("Struk berhasil dicetak")
+Tanggal:
+{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-                    st.write("### Ringkasan Pesanan")
+------------------------
+"""
 
                     for item in st.session_state.keranjang:
 
-                        st.write(
-                            f"- {item['nama']} x {item['qty']}"
+                        subtotal = (
+                            item["harga"]
+                            * item["qty"]
                         )
 
-                    st.write(f"Total Bayar: Rp {total:,}")
-                    st.write(f"Metode: {metode}")
-                    st.write(f"Uang Diterima: Rp {uang:,}")
-                    st.write(f"Kembalian: Rp {kembalian:,}")
+                        struk += (
+                            f"{item['nama']}\n"
+                            f"{item['qty']} x "
+                            f"Rp {item['harga']:,}\n"
+                            f"= Rp {subtotal:,}\n\n"
+                        )
 
-                    # RESET KERANJANG
+                    struk += (
+                        "========================\n"
+                        f"TOTAL : Rp {total:,}\n"
+                        f"METODE : {metode}\n"
+                        f"TUNAI : Rp {uang:,}\n"
+                        f"KEMBALI : Rp {kembalian:,}\n"
+                        "========================\n"
+                        "Terima Kasih\n"
+                    )
+
+                    st.session_state.struk = struk
+
+                    st.success(
+                        "Struk berhasil dicetak"
+                    )
+
+                    st.balloons()
+
                     st.session_state.keranjang = []
 
-# =========================
-# TAB KEUANGAN
-# =========================
-with keuangan_tab:
+        # =====================
+        # TAMPILKAN STRUK
+        # =====================
+        if st.session_state.struk != "":
 
-    st.subheader("Laporan Keuangan")
+            st.markdown("## 🧾 Struk Pembayaran")
 
-    total_pemasukan = sum(
-        item["total"]
-        for item in st.session_state.riwayat_transaksi
-    )
-
-    total_transaksi = len(
-        st.session_state.riwayat_transaksi
-    )
-
-    pengeluaran = 0
-    laba_bersih = total_pemasukan - pengeluaran
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "Pemasukan",
-            f"Rp {total_pemasukan:,}"
-        )
-
-    with col2:
-        st.metric(
-            "Jumlah Transaksi",
-            total_transaksi
-        )
-
-    with col3:
-        st.metric(
-            "Laba Bersih",
-            f"Rp {laba_bersih:,}"
-        )
-
-    st.divider()
-
-    if len(st.session_state.riwayat_transaksi) == 0:
-
-        st.info("Belum ada transaksi")
-
-    else:
-
-        for item in reversed(
-            st.session_state.riwayat_transaksi
-        ):
-
-            with st.container(border=True):
-
-                st.write(
-                    f"Tanggal: {item['tanggal']}"
-                )
-
-                st.write(
-                    f"Total: Rp {item['total']:,}"
-                )
-
-                st.write(
-                    f"Metode Pembayaran: {item['metode']}"
-                )
-
-                st.write(
-                    f"Jumlah Item: {item['jumlah_item']}"
-                )
+            st.markdown(
+                f"""
+                <div class="struk">
+                <pre>{st.session_state.struk}</pre>
+                </div>
+                """,
+                unsafe
