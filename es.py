@@ -5,7 +5,7 @@ from datetime import datetime
 # CONFIG
 # =========================
 st.set_page_config(
-    page_title="Es Kelapa Lanjai",
+    page_title="Kasir Es Kelapa",
     layout="wide"
 )
 
@@ -17,25 +17,25 @@ menu = [
         "id": 1,
         "nama": "Es Kelapa + Gula",
         "harga": 4000,
-        "gambar": "https://i.postimg.cc/0Q0n0G7M/es-kelapa-gula.jpg",
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 2,
         "nama": "Es Kelapa + Gula + Susu",
         "harga": 5000,
-        "gambar": "https://i.postimg.cc/vmL1YBfN/es-kelapa-susu.jpg",
+        "gambar": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 3,
         "nama": "Kelapa Murni",
         "harga": 10000,
-        "gambar": "https://i.postimg.cc/Z5W6tR6B/kelapa-murni.jpg",
+        "gambar": "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=1200&auto=format&fit=crop",
     },
     {
         "id": 4,
         "nama": "Air Kelapa",
         "harga": 5000,
-        "gambar": "https://i.postimg.cc/4dM3tM0r/air-kelapa.jpg",
+        "gambar": "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?q=80&w=1200&auto=format&fit=crop",
     },
 ]
 
@@ -55,13 +55,17 @@ st.markdown(
     """
     <style>
 
+    .stApp {
+        background-image: url("https://images.unsplash.com/photo-1502741338009-cac2772e18bc?q=80&w=1600&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
     .main {
-        background: linear-gradient(
-            to bottom right,
-            #dcfce7,
-            #bbf7d0,
-            #86efac
-        );
+        background: rgba(255,255,255,0.80);
+        padding: 20px;
+        border-radius: 20px;
     }
 
     .stButton button {
@@ -76,6 +80,16 @@ st.markdown(
     .stButton button:hover {
         background-color: #15803d;
         color: white;
+    }
+
+    h1, h2, h3 {
+        color: #14532d;
+    }
+
+    [data-testid="stVerticalBlock"] > div:has(div.element-container) {
+        background-color: rgba(255,255,255,0.85);
+        padding: 15px;
+        border-radius: 15px;
     }
 
     </style>
@@ -380,72 +394,3 @@ with keuangan_tab:
         trx["total"]
         for trx
         in st.session_state.riwayat_transaksi
-    )
-
-    total_transaksi = len(
-        st.session_state.riwayat_transaksi
-    )
-
-    total_item = sum(
-        trx["jumlah_item"]
-        for trx
-        in st.session_state.riwayat_transaksi
-    )
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-
-        st.metric(
-            "Total Pemasukan",
-            f"Rp {total_pemasukan:,}"
-        )
-
-    with col2:
-
-        st.metric(
-            "Jumlah Transaksi",
-            total_transaksi
-        )
-
-    with col3:
-
-        st.metric(
-            "Item Terjual",
-            total_item
-        )
-
-    st.divider()
-
-    if len(
-        st.session_state.riwayat_transaksi
-    ) == 0:
-
-        st.info(
-            "Belum ada transaksi"
-        )
-
-    else:
-
-        for trx in reversed(
-            st.session_state
-            .riwayat_transaksi
-        ):
-
-            with st.container(border=True):
-
-                st.write(
-                    f"Tanggal : {trx['tanggal']}"
-                )
-
-                st.write(
-                    f"Total : Rp {trx['total']:,}"
-                )
-
-                st.write(
-                    f"Metode : {trx['metode']}"
-                )
-
-                st.write(
-                    f"Jumlah Item : {trx['jumlah_item']}"
-                )
