@@ -17,39 +17,36 @@ menu = [
         "id": 1,
         "nama": "Es Kelapa + Gula",
         "harga": 4000,
-        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=1200&auto=format&fit=crop",
+        "gambar": "assets/es_kelapa_gula.jpg",
     },
     {
         "id": 2,
         "nama": "Es Kelapa + Gula + Susu",
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=1200&auto=format&fit=crop",
+        "gambar": "assets/es_kelapa_susu.jpg",
     },
     {
         "id": 3,
         "nama": "Kelapa Murni",
         "harga": 10000,
-        "gambar": "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=1200&auto=format&fit=crop",
+        "gambar": "assets/kelapa_murni.jpg",
     },
     {
         "id": 4,
         "nama": "Air Kelapa",
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?q=80&w=1200&auto=format&fit=crop",
+        "gambar": "assets/air_kelapa.jpg",
     },
 ]
 
 # =========================
-# SESSION
+# SESSION STATE
 # =========================
 if "keranjang" not in st.session_state:
     st.session_state.keranjang = []
 
 if "riwayat_transaksi" not in st.session_state:
     st.session_state.riwayat_transaksi = []
-
-if "struk" not in st.session_state:
-    st.session_state.struk = ""
 
 # =========================
 # STYLE
@@ -83,16 +80,6 @@ st.markdown(
     .stButton button:hover {
         background-color: #ea580c;
         color: white;
-    }
-
-    .struk {
-        background-color: white;
-        padding: 20px;
-        border-radius: 15px;
-        border: 2px dashed #999;
-        color: black;
-        font-family: monospace;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
     }
 
     </style>
@@ -132,8 +119,13 @@ with menu_tab:
                     use_container_width=True
                 )
 
-                st.write(f"### {item['nama']}")
-                st.write(f"Harga : Rp {item['harga']:,}")
+                st.write(
+                    f"### {item['nama']}"
+                )
+
+                st.write(
+                    f"Harga : Rp {item['harga']:,}"
+                )
 
                 qty = st.number_input(
                     f"Qty {item['nama']}",
@@ -225,6 +217,9 @@ with menu_tab:
 
         kembalian = uang - total
 
+        # =====================
+        # KEMBALIAN
+        # =====================
         if uang > 0:
 
             if uang >= total:
@@ -242,7 +237,7 @@ with menu_tab:
         col_hapus, col_cetak = st.columns(2)
 
         # =====================
-        # HAPUS KERANJANG
+        # KOSONGKAN
         # =====================
         with col_hapus:
 
@@ -287,70 +282,183 @@ with menu_tab:
                         "total": total,
                         "metode": metode,
                         "jumlah_item": total_item,
+                        "detail": st.session_state.keranjang.copy()
                     }
 
                     st.session_state.riwayat_transaksi.append(
                         transaksi
                     )
 
-                    # =================
-                    # STRUK
-                    # =================
-                    struk = f"""
-TOKO ES KELAPA
+                    # =====================
+                    # FORMAT STRUK
+                    # =====================
+                    struk_text = f"""
+Tanggal :
+{transaksi['tanggal']}
+
 ========================
-
-Tanggal:
-{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-
-------------------------
 """
 
-                    for item in st.session_state.keranjang:
+                    for item in transaksi["detail"]:
 
                         subtotal = (
                             item["harga"]
                             * item["qty"]
                         )
 
-                        struk += (
-                            f"{item['nama']}\n"
-                            f"{item['qty']} x "
-                            f"Rp {item['harga']:,}\n"
-                            f"= Rp {subtotal:,}\n\n"
-                        )
+                        struk_text += f"""
+{item['nama']}
+{item['qty']} x Rp {item['harga']:,}
+= Rp {subtotal:,}
 
-                    struk += (
-                        "========================\n"
-                        f"TOTAL : Rp {total:,}\n"
-                        f"METODE : {metode}\n"
-                        f"TUNAI : Rp {uang:,}\n"
-                        f"KEMBALI : Rp {kembalian:,}\n"
-                        "========================\n"
-                        "Terima Kasih\n"
-                    )
+"""
 
-                    st.session_state.struk = struk
+                    struk_text += f"""
+========================
+TOTAL      : Rp {total:,}
+PEMBAYARAN : {metode}
+TUNAI      : Rp {uang:,}
+KEMBALIAN  : Rp {kembalian:,}
+========================
+"""
 
                     st.success(
                         "Struk berhasil dicetak"
                     )
 
+                    # =====================
+                    # TAMPILKAN STRUK
+                    # =====================
+                    st.markdown(
+                        f"""
+                        <div style="
+                            background-color: white;
+                            padding: 25px;
+                            border-radius: 15px;
+                            border: 2px dashed #999;
+                            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+                            margin-top: 20px;
+                            color: black;
+                            max-width: 450px;
+                            margin-left: auto;
+                            margin-right: auto;
+                        ">
+
+                            <h2 style="
+                                text-align: center;
+                                font-family: monospace;
+                                margin-bottom: 10px;
+                            ">
+                                🥥 TOKO ES KELAPA
+                            </h2>
+
+                            <hr>
+
+                            <pre style="
+                                font-family: monospace;
+                                font-size: 15px;
+                                white-space: pre-wrap;
+                                line-height: 1.6;
+                            ">
+{struk_text}
+                            </pre>
+
+                            <hr>
+
+                            <p style="
+                                text-align: center;
+                                font-weight: bold;
+                                font-family: monospace;
+                            ">
+                                Terima Kasih 🙏
+                            </p>
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
                     st.balloons()
 
+                    # kosongkan keranjang
                     st.session_state.keranjang = []
 
-        # =====================
-        # TAMPILKAN STRUK
-        # =====================
-        if st.session_state.struk != "":
+# =========================
+# TAB KEUANGAN
+# =========================
+with keuangan_tab:
 
-            st.markdown("## 🧾 Struk Pembayaran")
+    st.subheader("Laporan Keuangan")
 
-            st.markdown(
-                f"""
-                <div class="struk">
-                <pre>{st.session_state.struk}</pre>
-                </div>
-                """,
-                unsafe
+    total_pemasukan = sum(
+        trx["total"]
+        for trx
+        in st.session_state.riwayat_transaksi
+    )
+
+    total_transaksi = len(
+        st.session_state.riwayat_transaksi
+    )
+
+    total_item = sum(
+        trx["jumlah_item"]
+        for trx
+        in st.session_state.riwayat_transaksi
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+
+        st.metric(
+            "Total Pemasukan",
+            f"Rp {total_pemasukan:,}"
+        )
+
+    with col2:
+
+        st.metric(
+            "Jumlah Transaksi",
+            total_transaksi
+        )
+
+    with col3:
+
+        st.metric(
+            "Item Terjual",
+            total_item
+        )
+
+    st.divider()
+
+    if len(
+        st.session_state.riwayat_transaksi
+    ) == 0:
+
+        st.info(
+            "Belum ada transaksi"
+        )
+
+    else:
+
+        for trx in reversed(
+            st.session_state.riwayat_transaksi
+        ):
+
+            with st.container(border=True):
+
+                st.write(
+                    f"Tanggal : {trx['tanggal']}"
+                )
+
+                st.write(
+                    f"Total : Rp {trx['total']:,}"
+                )
+
+                st.write(
+                    f"Metode : {trx['metode']}"
+                )
+
+                st.write(
+                    f"Jumlah Item : {trx['jumlah_item']}"
+                )
