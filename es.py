@@ -7,7 +7,7 @@ menu = [
         "id": 1,
         "nama": "Es Kelapa + Gula",
         "harga": 4000,
-        "gambar": "https://images.unsplash.com/photo-1528825871115-3581a5387919",
+        "gambar": "https://i.postimg.cc/rFP9MM9K/Whats-App-Image-2026-05-08-at-17-34-02.jpg",
     },
     {
         "id": 2,
