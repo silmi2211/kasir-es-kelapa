@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Kasir UMKM", layout="wide")
 
-menu = [
+menu =
         "id": 1,
         "nama": "Es Kelapa",
         "harga": 12000,
