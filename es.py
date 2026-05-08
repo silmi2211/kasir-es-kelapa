@@ -5,21 +5,27 @@ st.set_page_config(page_title="Kasir UMKM", layout="wide")
 menu = [
     {
         "id": 1,
-        "nama": "Es Kelapa",
-        "harga": 12000,
-        "gambar": "https://images.unsplash.com/photo-1497534446932-c925b458314e",
+        "nama": "Es Kelapa + Gula",
+        "harga": 4000,
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4",
     },
     {
         "id": 2,
-        "nama": "Mie Pedas",
-        "harga": 18000,
-        "gambar": "https://images.unsplash.com/photo-1550547660-d9450f859349",
+        "nama": "Es Kelapa + Gula + Susu",
+        "harga": 5000,
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4",
     },
     {
         "id": 3,
-        "nama": "Ayam Geprek",
-        "harga": 22000,
-        "gambar": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
+        "nama": "Kelapa Murni",
+        "harga": 10000,
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4",
+    },
+    {
+        "id": 4,
+        "nama": "Air Kelapa",
+        "harga": 5000,
+        "gambar": "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4",
     },
 ]
 
@@ -115,7 +121,22 @@ with menu_tab:
 
         if st.button("Cetak Struk"):
             st.balloons()
-            st.success("Struk berhasil dicetak")
+
+            st.markdown("## 🧾 Struk Pembayaran")
+            st.write("========================")
+
+            for item in st.session_state.keranjang:
+                subtotal = item["harga"] * item["qty"]
+                st.write(f"{item['nama']} x {item['qty']}")
+                st.write(f"Rp {subtotal:,}")
+
+            st.write("------------------------")
+            st.write(f"Total: Rp {total:,}")
+            st.write(f"Metode: {metode}")
+            st.write(f"Uang Diterima: Rp {uang:,}")
+            st.write(f"Kembalian: Rp {kembalian:,}")
+            st.write("========================")
+            st.success("Terima kasih sudah membeli ✨")
 
 with keuangan_tab:
     st.subheader("Laporan Keuangan")
@@ -142,3 +163,4 @@ with keuangan_tab:
             st.write(f"Pengeluaran: Rp {item['pengeluaran']:,}")
             st.write(f"Transaksi: {item['transaksi']}")
             st.write(f"Laba Bersih: Rp {laba:,}")
+```
